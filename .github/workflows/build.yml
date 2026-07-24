@@ -20,19 +20,19 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Extract project
+      - name: Extract ZIP
         run: |
-          unzip hamster-ai.zip -d project
-          ls project
+          unzip -o hamster-ai.zip -d project
+          find project -name "settings.gradle.kts"
 
       - name: Build APK
         run: |
-          cd project
+          cd $(dirname $(find project -name "settings.gradle.kts"))
+          chmod +x gradlew || true
           gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug-apk
-          path: |
-            project/**/build/outputs/apk/debug/*.apk
+          name: APK
+          path: "**/build/outputs/apk/debug/*.apk"
